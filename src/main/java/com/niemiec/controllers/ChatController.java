@@ -2,7 +2,7 @@ package com.niemiec.controllers;
 
 import java.util.ArrayList;
 
-import com.niemiec.connections.ClientConnection;
+import com.niemiec.client.Client;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,13 +41,13 @@ public class ChatController {
 	private Button sendToPrivateChatButton;
 
 	private String nick;
-	private ClientConnection clientConnection;
+	private Client clientConnection;
 	ObservableList<String> list;
 
 	@FXML
 	void initialize() {
 		list = FXCollections.observableArrayList();
-		this.clientConnection = new ClientConnection(this, nick);
+		this.clientConnection = new Client(this, nick);
 	}
 
 	@FXML
@@ -84,6 +84,11 @@ public class ChatController {
 		listOfUsersChat.getItems().clear();
 		this.list.addAll(list);
 		listOfUsersChat.setItems(this.list);
+	}
+	
+	public void setTextToGeneralChat(String text) {
+		generalChat.setText(text);
+		
 	}
 
 }

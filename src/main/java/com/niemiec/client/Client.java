@@ -1,19 +1,23 @@
-package com.niemiec.connections;
+package com.niemiec.client;
 
 import java.util.ArrayList;
 
+import com.niemiec.connection.Connection;
 import com.niemiec.controllers.ChatController;
 
 import javafx.scene.control.TextField;
 
-public class ClientConnection extends Thread {
+public class Client {
 	private ChatController chatController;
 	private String nick;
 	private String actualPrivateUser;
+	private Connection connection;
 
-	public ClientConnection(ChatController chatController, String nick) {
+	public Client(ChatController chatController, String nick) {
 		this.chatController = chatController;
 		this.nick = nick;
+		connection = new Connection(this, "localhost", 6666);
+		connection.start();
 	}
 
 	public void setUserNickToPrivateMessage(String privateUser) {
@@ -26,6 +30,8 @@ public class ClientConnection extends Thread {
 		a.add("ffdsds");
 		a.add("ffdsdsdsdsd");
 		chatController.setUserList(a);
+		connection.sendTheObject(a);
+//		receiveTheObject(text);
 	}
 
 	public void sendToPrivateChat(String text) {
@@ -36,5 +42,15 @@ public class ClientConnection extends Thread {
 		chatController.setUserList(a);
 	}
 
+	public void receiveTheObject(Object object) {
+		if (object instanceof ArrayList) {
+			ArrayList<String> a = (ArrayList<String>) object;
+			for (int i = 0; i < a.size(); i++) {
+				System.out.println(a.get(i));
+			}
+		}
+		if (object != null && object instanceof String)
+			chatController.setTextToGeneralChat((String) object);
+	}
 
 }
