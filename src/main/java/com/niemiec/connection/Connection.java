@@ -2,7 +2,8 @@ package com.niemiec.connection;
 
 import java.io.IOException;
 import java.net.Socket;
-import com.niemiec.client.Client;
+
+import com.niemiec.objects.Client;
 
 public class Connection extends Thread {
 	private Client client;
@@ -22,11 +23,9 @@ public class Connection extends Thread {
 	@Override
 	public void run() {
 		Object object = null;
-		int i = 0;
 		while (!closeTheConnection) {
 			object = inputOutputStream.receiveTheObject();
 			client.receiveTheObject(object);
-			System.out.println(i++);
 		}
 		inputOutputStream.closeInputOutputStream();
 		interrupt();

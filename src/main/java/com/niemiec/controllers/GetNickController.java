@@ -31,7 +31,8 @@ public class GetNickController {
 	@FXML
 	private Button saveNickButton;
 
-	private String nick = null;
+	protected static String nick = null;
+	private FXMLLoader loader = null;
 
 	@FXML
 	void saveNick(ActionEvent event) {
@@ -43,7 +44,7 @@ public class GetNickController {
 	// TODO brzydko wygląda, ale póki co zostawię
 	private void viewChatAndSendNick() {
 		try {
-			FXMLLoader loader = getFXMLLoader();
+			loader = getFXMLLoader();
 			HBox chatWindow = loader.load();
 			mainVBox.getChildren().setAll(chatWindow);
 			stage.close();
@@ -51,8 +52,6 @@ public class GetNickController {
 			stage.setHeight(chatWindow.getPrefHeight() + 20);
 			stage.centerOnScreen();
 			stage.show();
-			ChatController c = loader.getController();
-			c.setNick(nick);
 		} catch (IOException e) {
 			System.out.println("Nie udało się wczytać nowego okna: " + e);
 		}

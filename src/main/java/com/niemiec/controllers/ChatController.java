@@ -2,16 +2,17 @@ package com.niemiec.controllers;
 
 import java.util.ArrayList;
 
-import com.niemiec.client.Client;
+import com.niemiec.objects.Client;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
@@ -20,7 +21,7 @@ public class ChatController {
 	private HBox mainHBox;
 
 	@FXML
-	private TextArea generalChat;
+	private ListView<String> generalChat;
 
 	@FXML
 	private TextField textAreaGeneralChat;
@@ -32,7 +33,7 @@ public class ChatController {
 	private ListView<String> listOfUsersChat;
 
 	@FXML
-	private TextArea privateChat;
+	private ListView<String> privateChat;
 
 	@FXML
 	private TextField textAreaPrivateChat;
@@ -40,35 +41,38 @@ public class ChatController {
 	@FXML
 	private Button sendToPrivateChatButton;
 
-	private String nick;
-	private Client clientConnection;
+	private Client client;
 	ObservableList<String> list;
 
 	@FXML
 	void initialize() {
 		list = FXCollections.observableArrayList();
-		this.clientConnection = new Client(this, nick);
+		this.client = new Client(this, GetNickController.nick);
 	}
 
 	@FXML
 	void getUserNick(MouseEvent event) {
 		ObservableList<String> userNickFromListView;
 		userNickFromListView = listOfUsersChat.getSelectionModel().getSelectedItems();
-		clientConnection.setUserNickToPrivateMessage(userNickFromListView.get(0));
+		client.setUserNickToPrivateMessage(userNickFromListView.get(0));
 	}
 
 	@FXML
-	void sendToGeneralChat(ActionEvent event) {
-		clientConnection.sendToGeneralChat(textAreaGeneralChat.getText());
+	void sendToGeneralChat() {
+		client.sendToGeneralChat(textAreaGeneralChat.getText());
+		textAreaGeneralChat.clear();
 	}
+	
+	@FXML
+    void sendToGeneralChatAfterKeyPress(KeyEvent event) {
+		if ("ENTER".equals(event.getCode().toString())) {
+			sendToGeneralChat();
+		}
+    }
 
 	@FXML
 	void sendToPrivateChat(ActionEvent event) {
-		clientConnection.sendToPrivateChat(textAreaPrivateChat.getText());
-	}
-
-	public void setNick(String nick) {
-		this.nick = nick;
+		client.sendToPrivateChat(textAreaPrivateChat.getText());
 	}
 
 	public ArrayList<String> getUserList(ObservableList<String> obs) {
@@ -80,15 +84,15 @@ public class ChatController {
 		return a;
 	}
 
-	public void setUserList(ArrayList<String> list) {
+	public void updateUsersList(ArrayList<String> list) {
 		listOfUsersChat.getItems().clear();
 		this.list.addAll(list);
 		listOfUsersChat.setItems(this.list);
 	}
-	
-	public void setTextToGeneralChat(String text) {
-		generalChat.setText(text);
-		
-	}
 
+	public void addMessageToGeneralChat(String message) {
+		Platform.runLater(() -> { 
+			generalChat.getItems().add(message);
+		});
+	}
 }
