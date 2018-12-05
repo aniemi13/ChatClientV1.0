@@ -42,11 +42,13 @@ public class ChatController {
 	private Button sendToPrivateChatButton;
 
 	private Client client;
-	ObservableList<String> list;
+	ObservableList<String> usersList;
+	ObservableList<String> privateList;
 
 	@FXML
 	void initialize() {
-		list = FXCollections.observableArrayList();
+		usersList = FXCollections.observableArrayList();
+		privateList = FXCollections.observableArrayList();
 		this.client = new Client(this, GetNickController.nick);
 	}
 
@@ -54,7 +56,8 @@ public class ChatController {
 	void getUserNick(MouseEvent event) {
 		ObservableList<String> userNickFromListView;
 		userNickFromListView = listOfUsersChat.getSelectionModel().getSelectedItems();
-		client.setUserNickToPrivateMessage(userNickFromListView.get(0));
+		if (userNickFromListView.get(0) != null)
+			client.setUserNickToPrivateMessage(userNickFromListView.get(0));
 	}
 
 	@FXML
@@ -62,20 +65,28 @@ public class ChatController {
 		client.sendToGeneralChat(textAreaGeneralChat.getText());
 		textAreaGeneralChat.clear();
 	}
-	
+
 	@FXML
-    void sendToGeneralChatAfterKeyPress(KeyEvent event) {
+	void sendToGeneralChatAfterKeyPress(KeyEvent event) {
 		if ("ENTER".equals(event.getCode().toString())) {
 			sendToGeneralChat();
 		}
-    }
-
-	@FXML
-	void sendToPrivateChat(ActionEvent event) {
-		client.sendToPrivateChat(textAreaPrivateChat.getText());
 	}
 
-	public ArrayList<String> getUserList(ObservableList<String> obs) {
+	@FXML
+	void sendToPrivateChatAfterKeyPress(KeyEvent event) {
+		if ("ENTER".equals(event.getCode().toString())) {
+			sendToPrivateChat();
+		}
+	}
+
+	@FXML
+	void sendToPrivateChat() {
+		client.sendToPrivateChat(textAreaPrivateChat.getText());
+		textAreaPrivateChat.clear();
+	}
+
+	public ArrayList<String> getUsersList(ObservableList<String> obs) {
 		ArrayList<String> a = new ArrayList<>();
 		for (int i = 0; i < obs.size(); i++) {
 			a.add(obs.get(i));
@@ -86,13 +97,35 @@ public class ChatController {
 
 	public void updateUsersList(ArrayList<String> list) {
 		listOfUsersChat.getItems().clear();
-		this.list.addAll(list);
-		listOfUsersChat.setItems(this.list);
+		this.usersList.addAll(list);
+		listOfUsersChat.setItems(this.usersList);
 	}
 
 	public void addMessageToGeneralChat(String message) {
-		Platform.runLater(() -> { 
+		Platform.runLater(() -> {
 			generalChat.getItems().add(message);
 		});
+	}
+
+	public ObservableList<String> getUsersList() {
+		return usersList;
+	}
+
+	public ListView<String> getListOfUsersChat() {
+		return listOfUsersChat;
+	}
+
+	public void addMessageToPrivateChat(String message) {
+		Platform.runLater(() -> {
+			privateChat.getItems().add(message);
+		});
+	}
+
+	public void updatePrivateChat(ArrayList<String> list) {
+		if (!list.isEmpty()) {
+			privateChat.getItems().clear();
+			this.privateList.addAll(list);
+			privateChat.setItems(this.privateList);
+		}
 	}
 }

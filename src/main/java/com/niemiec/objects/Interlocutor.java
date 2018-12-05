@@ -1,10 +1,9 @@
 package com.niemiec.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Interlocutor {
-	private List<String> messages;
+	private ArrayList<String> messages;
 	private String nick;
 	private boolean isOnline;
 	private boolean messageIsRead;
@@ -38,5 +37,9 @@ public class Interlocutor {
 	
 	public String getNick() {
 		return nick;
+	}
+	
+	public ArrayList<String> getMessages() {
+		return messages;
 	}
 }

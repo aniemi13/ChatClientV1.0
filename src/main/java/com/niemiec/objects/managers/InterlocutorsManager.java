@@ -49,4 +49,14 @@ public class InterlocutorsManager {
 		}
 		return null;
 	}
+	
+	public ArrayList<String> getMessages(String nick) {
+		return getInterlocutor(nick).getMessages();
+	}
+	
+	public boolean haveMessages(String nick) {
+		if (!getInterlocutor(nick).getMessages().isEmpty())
+			return true;
+		return false;
+	}
 }

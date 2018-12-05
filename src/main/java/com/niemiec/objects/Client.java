@@ -25,8 +25,8 @@ public class Client {
 		connection.sendTheObject(messagesManagement.sendToGeneralChat(message));
 	}
 
-	public void sendToPrivateChat(String text) {
-
+	public void sendToPrivateChat(String message) {
+		connection.sendTheObject(messagesManagement.sendToPrivateChat(message));
 	}
 
 	public void receiveTheObject(Object object) {
