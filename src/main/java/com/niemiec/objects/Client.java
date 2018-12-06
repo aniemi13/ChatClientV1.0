@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.niemiec.connection.Connection;
 import com.niemiec.controllers.ChatController;
+import com.niemiec.controllers.GetNickController;
 import com.niemiec.logic.MessagesManagement;
 
 
@@ -38,7 +39,7 @@ public class Client {
 	}
 
 	private void createConnection() {
-		connection = new Connection(this, "localhost", 6666);
-		connection.start();
+		this.connection = GetNickController.getConnection();
+		this.connection.setClient(this);
 	}
 }

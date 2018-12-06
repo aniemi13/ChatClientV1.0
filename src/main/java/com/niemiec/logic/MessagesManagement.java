@@ -24,15 +24,11 @@ public class MessagesManagement {
 		this.chatController = chatController;
 		this.nick = nick;
 		this.actualInterlocutor = "";
-		interlocutorsManager = new InterlocutorsManager();
-		generalChat = new GeneralChat();
+		this.interlocutorsManager = new InterlocutorsManager();
+		this.generalChat = new GeneralChat();
 	}
 
 	public void messageIsString(Object object) {
-		// TODO Auto-generated method stub
-		// rozróżnienie /pm od /gm
-		// jeżeli wiadomość przychodzi do aktualnie wyświetlanego użytkownika
-		// to aktualizujemy ListView
 		message = (String) object;
 		separateMessage();
 
@@ -54,7 +50,7 @@ public class MessagesManagement {
 			interlocutorsManager.setMessageIsRead(incomingNick, true);
 			addMessageToPrivateChat();
 		} else {
-			// jeżeli nie to podświetlenie pola
+			// TODO jeżeli nie to podświetlenie pola
 			interlocutorsManager.setMessageIsRead(incomingNick, false);
 		}
 	}
@@ -99,25 +95,22 @@ public class MessagesManagement {
 
 	public void setActualInterlocutor(String selectedNick) {
 		if (selectedNick.equals(this.nick)) {
-			// jeżeli wybrałem siebie to zablokować możliwość wpisywania - nieaktywny
-			// przycisk wyślij
-			// i wyczyścić privateListView
+			chatController.lockPrivateChat();
+			actualInterlocutor = "";
 		} else if (!selectedNick.equals(actualInterlocutor)) {
-			System.err.println(selectedNick);
 			if (!interlocutorsManager.isExist(selectedNick)) {
 				interlocutorsManager.addInterlocutor(selectedNick);
 			}
 			actualInterlocutor = selectedNick;
 //
 			if (interlocutorsManager.haveMessages(selectedNick)) {
-//				System.out.println("typeOfMessage: " + typeOfMessage + ", incomingNick: " + incomingNick
-//						+ ", actualInterlocutor: " + actualInterlocutor);
-//				interlocutorsManager.setMessageIsRead(actualInterlocutor, true);
-//				System.out.println("actual messages: " + interlocutorsManager.getMessages(selectedNick));
 				updatePrivateChatListView();
 				
-				//WIADOMOŚĆ ODCZYTANA - ZNIKA PODŚWIETLENIE UŻYTKOWNIKA
+				// TODO WIADOMOŚĆ ODCZYTANA - ZNIKA PODŚWIETLENIE UŻYTKOWNIKA
+			} else {
+				chatController.clearPrivateListView();
 			}
+			chatController.unlockPrivateChat();
 			// aktualizacja wyświetlania prywatnej wiadomości - ustawienie, że wiadomość
 			// odczytana
 			// i wyświetlenie jej
@@ -143,7 +136,9 @@ public class MessagesManagement {
 	}
 
 	public Object sendToPrivateChat(String message) {
-		chatController.addMessageToPrivateChat("TY> " + message);
+		String m = "TY> " + message;
+		chatController.addMessageToPrivateChat(m);
+		interlocutorsManager.addMessage(actualInterlocutor, m);
 		return new String("/" + PRIVATE_MESSAGE + "/" + nick + "/" + actualInterlocutor + "/" + message);
 	}
 

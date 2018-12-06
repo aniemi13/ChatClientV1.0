@@ -7,7 +7,6 @@ import com.niemiec.objects.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -127,5 +126,18 @@ public class ChatController {
 			this.privateList.addAll(list);
 			privateChat.setItems(this.privateList);
 		}
+	}
+	
+	public void lockPrivateChat() {
+		privateChat.getItems().clear();
+		sendToPrivateChatButton.setDisable(true);
+	}
+	
+	public void unlockPrivateChat() {
+		sendToPrivateChatButton.setDisable(false);
+	}
+
+	public void clearPrivateListView() {
+		privateChat.getItems().clear();
 	}
 }

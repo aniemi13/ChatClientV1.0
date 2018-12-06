@@ -40,7 +40,7 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <TextField fx:id="textAreaPrivateChat" alignment="TOP_LEFT" onKeyPressed="#sendToPrivateChatAfterKeyPress" prefHeight="73.0" prefWidth="213.0" />
-                  <Button fx:id="sendToPrivateChatButton" mnemonicParsing="false" onAction="#sendToPrivateChat" text="Wyślij" />
+                  <Button fx:id="sendToPrivateChatButton" disable="true" mnemonicParsing="false" onAction="#sendToPrivateChat" text="Wyślij" />
                </children>
             </HBox>
          </children>

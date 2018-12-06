@@ -3,17 +3,20 @@ package com.niemiec.connection;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.niemiec.controllers.GetNickController;
 import com.niemiec.objects.Client;
 
 public class Connection extends Thread {
+	private GetNickController getNickController;
 	private Client client;
 	private Socket socket;
 	private boolean isConnected;
 	private InputOutputStream inputOutputStream;
 	private boolean closeTheConnection;
-
-	public Connection(Client client, String host, int port) {
-		this.client = client;
+	
+	public Connection(GetNickController getNickController, String host, int port) {
+		this.getNickController = getNickController;
+		this.client = null;
 		this.isConnected = false;
 		makeTheConnection(host, port);
 		this.closeTheConnection = false;
@@ -25,10 +28,19 @@ public class Connection extends Thread {
 		Object object = null;
 		while (!closeTheConnection) {
 			object = inputOutputStream.receiveTheObject();
-			client.receiveTheObject(object);
+			receiveTheObject(object);
+			
 		}
 		inputOutputStream.closeInputOutputStream();
 		interrupt();
+	}
+
+	private void receiveTheObject(Object object) {
+		if (client != null) {
+			client.receiveTheObject(object);
+		} else {
+			getNickController.receiveTheObject(object);
+		}
 	}
 
 	public void makeTheConnection(String host, int port) {
@@ -60,5 +72,9 @@ public class Connection extends Thread {
 	
 	public void closeTheConnection() {
 		closeTheConnection = true;
+	}
+	
+	public void setClient(Client client) {
+		this.client = client;
 	}
 }

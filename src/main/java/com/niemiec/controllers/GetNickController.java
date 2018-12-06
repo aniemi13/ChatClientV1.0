@@ -3,6 +3,8 @@ package com.niemiec.controllers;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import com.niemiec.connection.Connection;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +35,7 @@ public class GetNickController {
 
 	protected static String nick = null;
 	private FXMLLoader loader = null;
+	private static Connection connection;
 
 	@FXML
 	void saveNick(ActionEvent event) {
@@ -68,7 +71,12 @@ public class GetNickController {
 			informationLabel.setText("Błędny nick");
 			return false;
 		}
-		return true;
+		return checkIfTheNickDoesNotExist();
+	}
+
+	private boolean checkIfTheNickDoesNotExist() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	private void getNick() {
@@ -85,5 +93,16 @@ public class GetNickController {
 
 	@FXML
 	void initialize() {
+		connection = new Connection(this, "localhost", 6666);
+		connection.start();
+	}
+
+	public void receiveTheObject(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static Connection getConnection() {
+		return connection;
 	}
 }
