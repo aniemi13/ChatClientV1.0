@@ -1,7 +1,5 @@
 package com.niemiec.objects;
 
-import java.util.ArrayList;
-
 import com.niemiec.connection.Connection;
 import com.niemiec.controllers.ChatController;
 import com.niemiec.controllers.GetNickController;
@@ -19,7 +17,6 @@ public class Client {
 
 	public void setUserNickToPrivateMessage(String actualInterlocutor) {
 		messagesManagement.setActualInterlocutor(actualInterlocutor);
-		
 	}
 
 	public void sendToGeneralChat(String message) {
@@ -31,15 +28,16 @@ public class Client {
 	}
 
 	public void receiveTheObject(Object object) {
-		if (object instanceof String) {
-			messagesManagement.messageIsString(object);
-		} else if (object instanceof ArrayList) {
-			messagesManagement.messageIsArrayList(object);
-		}
+		messagesManagement.receiveTheObject(object);
 	}
 
 	private void createConnection() {
 		this.connection = GetNickController.getConnection();
 		this.connection.setClient(this);
+	}
+
+	public void exit() {
+		connection.sendTheObject(messagesManagement.exit());
+		connection.interrupt();
 	}
 }

@@ -16,7 +16,7 @@ public class MessagesManagement {
 	private String message;
 	private String typeOfMessage;
 	private String nick;
-	private String incomingNick;
+	private String senderNick;
 	private String rightMessage;
 	private String actualInterlocutor;
 
@@ -26,6 +26,14 @@ public class MessagesManagement {
 		this.actualInterlocutor = "";
 		this.interlocutorsManager = new InterlocutorsManager();
 		this.generalChat = new GeneralChat();
+	}
+
+	public void receiveTheObject(Object object) {
+		if (object instanceof String) {
+			messageIsString(object);
+		} else if (object instanceof ArrayList) {
+			messageIsArrayList(object);
+		}
 	}
 
 	public void messageIsString(Object object) {
@@ -41,22 +49,22 @@ public class MessagesManagement {
 	}
 
 	private void receivedPrivateMessage() {
-		if (!interlocutorsManager.isExist(incomingNick)) {
-			interlocutorsManager.addInterlocutor(incomingNick);
+		if (!interlocutorsManager.isExist(senderNick)) {
+			interlocutorsManager.addInterlocutor(senderNick);
 		}
-		String m = ((incomingNick.equals(nick)) ? "TY" : incomingNick) + "> " + rightMessage;
-		interlocutorsManager.addMessage(incomingNick, m);
-		if (incomingNick.equals(actualInterlocutor)) {
-			interlocutorsManager.setMessageIsRead(incomingNick, true);
+		String m = ((senderNick.equals(nick)) ? "TY" : senderNick) + "> " + rightMessage;
+		interlocutorsManager.addMessage(senderNick, m);
+		if (senderNick.equals(actualInterlocutor)) {
+			interlocutorsManager.setMessageIsRead(senderNick, true);
 			addMessageToPrivateChat();
 		} else {
 			// TODO jeżeli nie to podświetlenie pola
-			interlocutorsManager.setMessageIsRead(incomingNick, false);
+			interlocutorsManager.setMessageIsRead(senderNick, false);
 		}
 	}
 
 	private void receivedAndViewGroupMessage() {
-		String m = ((incomingNick.equals(nick)) ? "TY" : incomingNick) + "> " + rightMessage;
+		String m = ((senderNick.equals(nick)) ? "TY" : senderNick) + "> " + rightMessage;
 		generalChat.addMessage(m);
 		chatController.addMessageToGeneralChat(m);
 	}
@@ -73,14 +81,14 @@ public class MessagesManagement {
 	private void getNickAndInterlocutorNickAndRightMessageFromMessage() {
 		String[] s = message.split("/", 5);
 		typeOfMessage = s[1];
-		incomingNick = s[2];
+		senderNick = s[2];
 		rightMessage = s[4];
 	}
 
 	private void getNickAndRightMessageFromMessage() {
 		String[] s = message.split("/", 4);
 		typeOfMessage = s[1];
-		incomingNick = s[2];
+		senderNick = s[2];
 		rightMessage = s[3];
 	}
 
@@ -94,6 +102,7 @@ public class MessagesManagement {
 	}
 
 	public void setActualInterlocutor(String selectedNick) {
+
 		if (selectedNick.equals(this.nick)) {
 			chatController.lockPrivateChat();
 			actualInterlocutor = "";
@@ -102,10 +111,9 @@ public class MessagesManagement {
 				interlocutorsManager.addInterlocutor(selectedNick);
 			}
 			actualInterlocutor = selectedNick;
-//
 			if (interlocutorsManager.haveMessages(selectedNick)) {
 				updatePrivateChatListView();
-				
+
 				// TODO WIADOMOŚĆ ODCZYTANA - ZNIKA PODŚWIETLENIE UŻYTKOWNIKA
 			} else {
 				chatController.clearPrivateListView();
@@ -123,7 +131,7 @@ public class MessagesManagement {
 	}
 
 	private void addMessageToPrivateChat() {
-		String m = ((incomingNick.equals(nick)) ? "TY" : incomingNick) + "> " + rightMessage;
+		String m = ((senderNick.equals(nick)) ? "TY" : senderNick) + "> " + rightMessage;
 		chatController.addMessageToPrivateChat(m);
 	}
 
@@ -140,6 +148,10 @@ public class MessagesManagement {
 		chatController.addMessageToPrivateChat(m);
 		interlocutorsManager.addMessage(actualInterlocutor, m);
 		return new String("/" + PRIVATE_MESSAGE + "/" + nick + "/" + actualInterlocutor + "/" + message);
+	}
+
+	public Object exit() {
+		return new String("/exit/" + nick);
 	}
 
 }

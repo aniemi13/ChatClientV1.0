@@ -37,6 +37,7 @@ public class InputOutputStream {
 	private void createOutputStream() {
 		try {
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
+			outputStream.flush();
 		} catch (IOException e) {
 			System.out.println("Błąd tworzenia strumienia wyjściowego: " + e);
 		}

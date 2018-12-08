@@ -95,9 +95,12 @@ public class ChatController {
 	}
 
 	public void updateUsersList(ArrayList<String> list) {
-		listOfUsersChat.getItems().clear();
-		this.usersList.addAll(list);
-		listOfUsersChat.setItems(this.usersList);
+		Platform.runLater(() -> {
+			listOfUsersChat.getItems().clear();
+			this.usersList.addAll(list);
+			listOfUsersChat.setItems(this.usersList);
+
+		});
 	}
 
 	public void addMessageToGeneralChat(String message) {
@@ -127,17 +130,23 @@ public class ChatController {
 			privateChat.setItems(this.privateList);
 		}
 	}
-	
+
 	public void lockPrivateChat() {
 		privateChat.getItems().clear();
 		sendToPrivateChatButton.setDisable(true);
 	}
-	
+
 	public void unlockPrivateChat() {
 		sendToPrivateChatButton.setDisable(false);
 	}
 
 	public void clearPrivateListView() {
 		privateChat.getItems().clear();
+	}
+	
+	@FXML
+	public void exit() {
+		client.exit();
+		System.exit(-1);
 	}
 }

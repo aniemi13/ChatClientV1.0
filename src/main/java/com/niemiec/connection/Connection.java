@@ -28,19 +28,27 @@ public class Connection extends Thread {
 		Object object = null;
 		while (!closeTheConnection) {
 			object = inputOutputStream.receiveTheObject();
-			receiveTheObject(object);
-			
+			receiveTheObject(object);	
 		}
-		inputOutputStream.closeInputOutputStream();
-		interrupt();
 	}
 
 	private void receiveTheObject(Object object) {
+		checkIfClientIsExist();
 		if (client != null) {
 			client.receiveTheObject(object);
 		} else {
 			getNickController.receiveTheObject(object);
 		}
+	}
+
+	private void checkIfClientIsExist() {
+		if (client == null) {
+			try {
+				sleep(500);
+			} catch (InterruptedException e) {
+			}
+		}
+			
 	}
 
 	public void makeTheConnection(String host, int port) {
@@ -54,6 +62,8 @@ public class Connection extends Thread {
 	}
 	
 	public void interrupt() {
+		closeTheConnection = true;
+		inputOutputStream.closeInputOutputStream();
 		super.interrupt();
 		try {
 			socket.close();
