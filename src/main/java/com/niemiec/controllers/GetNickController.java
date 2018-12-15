@@ -33,9 +33,9 @@ public class GetNickController {
 	@FXML
 	private Button saveNickButton;
 
-	protected static String nick = null;
+	private String nick = null;
 	private FXMLLoader loader = null;
-	private static Connection connection;
+	private Connection connection;
 	private CheckNickManagement checkNickManagement = null;
 	private boolean nickIsOk = false;
 
@@ -84,7 +84,7 @@ public class GetNickController {
 		Platform.runLater(() -> {
 			String answer = (String) object;
 			if (!checkNickManagement.checkIfNickIsOk(answer)) {
-				informationLabel.setText("Taki nick już istnieje w bazie");
+				informationLabel.setText("Wybrany przez Ciebie link jest już zajęty");
 				return;
 			}
 			nickIsOk = true;
@@ -97,10 +97,6 @@ public class GetNickController {
 		return nickIsOk;
 	}
 
-	public static Connection getConnection() {
-		return connection;
-	}
-
 	// TODO brzydko wygląda, ale póki co zostawię
 	private void viewChatAndSendNick() {
 		Platform.runLater(() -> {
@@ -108,6 +104,12 @@ public class GetNickController {
 			try {
 				loader = getFXMLLoader();
 				HBox chatWindow = loader.load();
+				
+				ChatController cc = loader.getController();
+				cc.setNick(nick);
+				cc.setConnection(connection);
+				cc.readyToWork();
+				
 				mainVBox.getChildren().setAll(chatWindow);
 				stage.close();
 				stage.setWidth(chatWindow.getPrefWidth());
