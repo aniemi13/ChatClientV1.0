@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import com.niemiec.connection.Connection;
 import com.niemiec.logic.CheckNickManagement;
+import com.niemiec.objects.Client;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -36,6 +37,7 @@ public class GetNickController {
 	private String nick = null;
 	private FXMLLoader loader = null;
 	private Connection connection;
+	private Client client = null;
 	private CheckNickManagement checkNickManagement = null;
 	private boolean nickIsOk = false;
 
@@ -43,6 +45,7 @@ public class GetNickController {
 	void initialize() {
 		connection = new Connection(this, "localhost", 6666);
 		connection.start();
+		client = new Client();
 		checkNickManagement = new CheckNickManagement();
 	}
 
@@ -106,9 +109,11 @@ public class GetNickController {
 				HBox chatWindow = loader.load();
 				
 				ChatController cc = loader.getController();
-				cc.setNick(nick);
-				cc.setConnection(connection);
-				cc.readyToWork();
+				client.setNick(nick);
+				client.setConnection(connection);
+				client.setChatController(cc);
+				client.readyToWork();
+				cc.setClient(client);
 				
 				mainVBox.getChildren().setAll(chatWindow);
 				stage.close();

@@ -8,11 +8,14 @@ import com.niemiec.logic.MessagesManagement;
 public class Client {
 	private Connection connection;
 	private MessagesManagement messagesManagement;
-
-	public Client(ChatController chatController) {
-		this.messagesManagement = new MessagesManagement(chatController);
+	
+	public Client() {
+		messagesManagement = new MessagesManagement();
 	}
-
+	
+	public void setChatController(ChatController chatController) {
+		messagesManagement.setChatController(chatController);
+	}
 	public void setUserNickToPrivateMessage(String actualInterlocutor) {
 		messagesManagement.setActualInterlocutor(actualInterlocutor);
 	}
@@ -38,12 +41,12 @@ public class Client {
 		messagesManagement.setNick(nick);
 	}
 
-	public void setConnection(Connection connection2) {
-		this.connection = connection2;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 		this.connection.setClient(this);
 	}
 
-	public void sendReadyToWork() {
+	public void readyToWork() {
 		connection.sendTheObject(messagesManagement.sendReadyToWork());
 	}
 }
